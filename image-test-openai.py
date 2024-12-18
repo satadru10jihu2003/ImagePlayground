@@ -15,7 +15,7 @@ def encode_image(image_path):
     return base64.b64encode(image_file.read()).decode('utf-8')
 
 # Path to your image
-image_path = "math.jpeg"
+image_path = "IMG_2585.jpeg"
 # Compress the image
 compress_image(image_path, "compressed.jpeg")
 client = OpenAI()
@@ -29,16 +29,27 @@ response = client.chat.completions.create(
       "role": "user",
       "content": [
         {
-          "type": "text",
-          "text": "This image is from a student's diary. Print the text in the image",
-        },
-        {
           "type": "image_url",
           "image_url": {
             "url":  f"data:image/jpeg;base64,{base64_image}"
           },
         },
       ],
+    },
+    {
+       "role": "system",
+        "content": [
+          {
+            "type": "text",
+            "text": "This image is from a student's diary. Read the text in the image. Then Please review the text in prompt for any grammar or spelling errors. \
+                    If you find any errors, please provide a list with the following information for each error: \
+                    Type of error: (e.g., Spelling, Grammar, Punctuation) \
+                    Incorrect word/phrase: (The original word/phrase) \
+                    Correct word/phrase: (The suggested correction) \
+                    Explanation: (A brief explanation of the error and why the correction is better) \
+                    Lastly please provide a corrected version of the text."
+          }
+        ]
     }
   ],
 )
